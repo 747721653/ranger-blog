@@ -172,7 +172,7 @@ export default defineConfig4CustomTheme<VdoingThemeConfig>({
 
     // 博主信息 (显示在首页侧边栏)
     blogger: {
-      avatar: '/img/head.png',
+      avatar: 'ranger-blog/img/head.png',
       name: 'Ranger',
       slogan: '一名在校研究生',
     },
