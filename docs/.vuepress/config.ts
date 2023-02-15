@@ -22,7 +22,7 @@ export default defineConfig4CustomTheme<VdoingThemeConfig>({
       description: '一名计算机专业研究生的博客&学习笔记记录网站',
     }
   },
-  base: '/', // 默认'/'。如果你想将你的网站部署到如 https://foo.github.io/bar/，那么 base 应该被设置成 "/bar/",（否则页面将失去样式等文件）
+  // base: '/ranger-blog/', // 默认'/'。如果你想将你的网站部署到如 https://foo.github.io/bar/，那么 base 应该被设置成 "/bar/",（否则页面将失去样式等文件）
 
   // 主题配置
   themeConfig: {
@@ -32,70 +32,70 @@ export default defineConfig4CustomTheme<VdoingThemeConfig>({
       {
         text: '人工智能',
         link: '/web/', //目录页链接，此处link是vdoing主题新增的配置项，有二级导航时，可以点击一级导航跳到目录页
-        items: [
-          // 说明：以下所有link的值只是在相应md文件头部定义的永久链接（不是什么特殊编码）。另外，注意结尾是有斜杠的
-          {
-            text: '前端文章',
-            items: [
-              { text: 'JavaScript', link: '/pages/8143cc480faf9a11/' },
-            ],
-          },
-          {
-            text: '学习笔记',
-            items: [
-              { text: '《JavaScript教程》', link: '/note/javascript/' },
-              { text: '《JavaScript高级程序设计》', link: '/note/js/' },
-              { text: '《ES6 教程》', link: '/note/es6/' },
-              { text: '《Vue》', link: '/note/vue/' },
-              { text: '《React》', link: '/note/react/' },
-              {
-                text: '《TypeScript 从零实现 axios》',
-                link: '/note/typescript-axios/',
-              },
-              {
-                text: '《Git》',
-                link: '/note/git/',
-              },
-              {
-                text: 'TypeScript',
-                link: '/pages/51afd6/',
-              },
-              {
-                text: 'JS设计模式总结',
-                link: '/pages/4643cd/',
-              },
-            ],
-          },
-        ],
+        // items: [
+        //   // 说明：以下所有link的值只是在相应md文件头部定义的永久链接（不是什么特殊编码）。另外，注意结尾是有斜杠的
+        //   {
+        //     text: '前端文章',
+        //     items: [
+        //       { text: 'JavaScript', link: '/pages/8143cc480faf9a11/' },
+        //     ],
+        //   },
+        //   {
+        //     text: '学习笔记',
+        //     items: [
+        //       { text: '《JavaScript教程》', link: '/note/javascript/' },
+        //       { text: '《JavaScript高级程序设计》', link: '/note/js/' },
+        //       { text: '《ES6 教程》', link: '/note/es6/' },
+        //       { text: '《Vue》', link: '/note/vue/' },
+        //       { text: '《React》', link: '/note/react/' },
+        //       {
+        //         text: '《TypeScript 从零实现 axios》',
+        //         link: '/note/typescript-axios/',
+        //       },
+        //       {
+        //         text: '《Git》',
+        //         link: '/note/git/',
+        //       },
+        //       {
+        //         text: 'TypeScript',
+        //         link: '/pages/51afd6/',
+        //       },
+        //       {
+        //         text: 'JS设计模式总结',
+        //         link: '/pages/4643cd/',
+        //       },
+        //     ],
+        //   },
+        // ],
       },
       {
         text: '开发',
         link: '/ui/',
-        items: [
-          { text: 'HTML', link: '/pages/8309a5b876fc95e3/' },
-          { text: 'CSS', link: '/pages/0a83b083bdf257cb/' },
-        ],
+        // items: [
+        //   { text: 'HTML', link: '/pages/8309a5b876fc95e3/' },
+        //   { text: 'CSS', link: '/pages/0a83b083bdf257cb/' },
+        // ],
       },
       {
         text: '技术',
         link: '/technology/',
-        items: [
-          { text: '技术文档', link: '/pages/9a7ee40fc232253e/' },
-          { text: 'GitHub技巧', link: '/pages/4c778760be26d8b3/' },
-          { text: 'Nodejs', link: '/pages/117708e0af7f0bd9/' },
-          { text: '博客搭建', link: '/pages/41f87d890d0a02af/' },
-        ],
+        // items: [
+        //   { text: '技术文档', link: '/pages/9a7ee40fc232253e/' },
+        //   { text: 'GitHub技巧', link: '/pages/4c778760be26d8b3/' },
+        //   { text: 'Nodejs', link: '/pages/117708e0af7f0bd9/' },
+        //   { text: '博客搭建', link: '/pages/41f87d890d0a02af/' },
+        // ],
       },
       {
         text: '更多',
         link: '/more/',
-        items: [
-          { text: '学习', link: '/pages/f2a556/' },
-          { text: '面试', link: '/pages/aea6571b7a8bae86/' },
-          { text: '心情杂货', link: '/pages/2d615df9a36a98ed/' },
-          { text: '实用技巧', link: '/pages/baaa02/' },
-          { text: '友情链接', link: '/friends/' },
-        ],
+        // items: [
+        //   { text: '学习', link: '/pages/f2a556/' },
+        //   { text: '面试', link: '/pages/aea6571b7a8bae86/' },
+        //   { text: '心情杂货', link: '/pages/2d615df9a36a98ed/' },
+        //   { text: '实用技巧', link: '/pages/baaa02/' },
+        //   { text: '友情链接', link: '/friends/' },
+        // ],
       },
       { text: '关于', link: '/about/' },
       {
@@ -119,11 +119,11 @@ export default defineConfig4CustomTheme<VdoingThemeConfig>({
     ],
     sidebarDepth: 2, // 侧边栏显示深度，默认1，最大2（显示到h3标题）
     logo: '/img/logo.png', // 导航栏logo
-    repo: 'xugaoyi/vuepress-theme-vdoing', // 导航栏右侧生成Github链接
+    repo: '747721653/ranger-blog', // 导航栏右侧生成Github链接
     searchMaxSuggestions: 10, // 搜索结果显示最大数
     lastUpdated: '上次更新', // 开启更新时间，并配置前缀文字   string | boolean (取值为git提交时间)
     docsDir: 'docs', // 编辑的文件夹
-    // docsBranch: 'master', // 编辑的文件所在分支，默认master。 注意：如果你的分支是main则修改为main
+    docsBranch: 'main', // 编辑的文件所在分支，默认master。 注意：如果你的分支是main则修改为main
     editLinks: true, // 启用编辑
     editLinkText: '编辑',
 
@@ -172,7 +172,7 @@ export default defineConfig4CustomTheme<VdoingThemeConfig>({
 
     // 博主信息 (显示在首页侧边栏)
     blogger: {
-      avatar: '/img/head.png',
+      avatar: 'ranger-blog/img/head.png',
       name: 'Ranger',
       slogan: '一名在校研究生',
     },
@@ -203,7 +203,7 @@ export default defineConfig4CustomTheme<VdoingThemeConfig>({
     footer: {
       createYear: 2023, // 博客创建年份
       copyrightInfo:
-        'Ranger | <a href="https://github.com/xugaoyi/vuepress-theme-vdoing/blob/master/LICENSE" target="_blank">MIT License</a>', // 博客版权信息、备案信息等，支持a标签或换行标签</br>
+        'Ranger | <a href="https://github.com/747721653/vuepress-theme-vdoing/blob/master/LICENSE" target="_blank">MIT License</a>', // 博客版权信息、备案信息等，支持a标签或换行标签</br>
     },
 
     // 扩展自动生成frontmatter。（当md文件的frontmatter不存在相应的字段时将自动添加。不会覆盖已有的数据。）
@@ -325,24 +325,24 @@ export default defineConfig4CustomTheme<VdoingThemeConfig>({
       },
     ],
     [
-      'vuepress-plugin-comment', // 评论
-      {
-        choosen: 'gitalk',
-        options: {
-          clientID: 'a6e1355287947096b88b',
-          clientSecret: 'f0e77d070fabfcd5af95bebb82b2d574d7248d71',
-          repo: 'blog-gitalk-comment', // GitHub 仓库
-          owner: 'xugaoyi', // GitHub仓库所有者
-          admin: ['xugaoyi'], // 对仓库有写权限的人
-          // distractionFreeMode: true,
-          pagerDirection: 'last', // 'first'正序 | 'last'倒序
-          id: '<%- (frontmatter.permalink || frontmatter.to.path).slice(-16) %>', //  页面的唯一标识,长度不能超过50
-          title: '「评论」<%- frontmatter.title %>', // GitHub issue 的标题
-          labels: ['Gitalk', 'Comment'], // GitHub issue 的标签
-          body:
-            '页面：<%- window.location.origin + (frontmatter.to.path || window.location.pathname) %>', // GitHub issue 的内容
-        },
-      },
+      // 'vuepress-plugin-comment', // 评论
+      // {
+      //   choosen: 'gitalk',
+      //   options: {
+      //     clientID: 'bfe88d7fe1da0adfe317',
+      //     clientSecret: '06cc9d928c22c4080b8d17cfe65dd4b7b8aa4b44',
+      //     repo: 'ranger-blog', // GitHub 仓库
+      //     owner: '747721653', // GitHub仓库所有者
+      //     admin: ['747721653'], // 对仓库有写权限的人
+      //     // distractionFreeMode: true,
+      //     pagerDirection: 'last', // 'first'正序 | 'last'倒序
+      //     id: '<%- (frontmatter.permalink || frontmatter.to.path).slice(-16) %>', //  页面的唯一标识,长度不能超过50
+      //     title: '「评论」<%- frontmatter.title %>', // GitHub issue 的标题
+      //     labels: ['Gitalk', 'Comment'], // GitHub issue 的标签
+      //     body:
+      //       '页面：<%- window.location.origin + (frontmatter.to.path || window.location.pathname) %>', // GitHub issue 的内容
+      //   },
+      // },
     ],
     [
       '@vuepress/last-updated', // "上次更新"时间格式
