@@ -3,6 +3,7 @@
  */
 import { resolve } from 'path'
 import { defineConfig4CustomTheme, UserPlugins } from 'vuepress/config'
+import {defineUserConfig} from 'vuepress'
 import { VdoingThemeConfig } from 'vuepress-theme-vdoing/types'
 import dayjs from 'dayjs'
 import baiduCode from './config/baiduCode' // 百度统计hm码
@@ -11,7 +12,13 @@ import htmlModules from './config/htmlModules' // 自定义插入的html块
 const DOMAIN_NAME = 'xugaoyi.com' // 域名 (不带https)
 const WEB_SITE = `https://${DOMAIN_NAME}` // 网址
 
+
 export default defineConfig4CustomTheme<VdoingThemeConfig>({
+  // extendsMarkdown: md => {
+  //   md.use(require('markdown-it-katex'))
+  //   md.linkify.set({ fuzzyEmail: false })
+  // },
+
   theme: 'vdoing', // 使用npm主题包
   // theme: resolve(__dirname, '../../vdoing'), // 使用本地主题包
 
@@ -259,6 +266,15 @@ export default defineConfig4CustomTheme<VdoingThemeConfig>({
       },
     ],
 
+    [
+      'vuepress-plugin-mathjax', //提供latex支持
+      {
+        
+      }
+    ],
+
+
+
     // 全文搜索。 ⚠️注意：此插件会在打开网站时多加载部分js文件用于搜索，导致初次访问网站变慢。如在意初次访问速度的话可以不使用此插件！（推荐：vuepress-plugin-thirdparty-search）
     // 'fulltext-search',
 
@@ -359,9 +375,12 @@ export default defineConfig4CustomTheme<VdoingThemeConfig>({
     extractHeaders: ['h2', 'h3', 'h4', 'h5', 'h6'], // 提取标题到侧边栏的级别，默认['h2', 'h3']
   },
 
+
+
   // 监听文件变化并重新构建
   extraWatchFiles: [
     '.vuepress/config.ts',
     '.vuepress/config/htmlModules.ts',
   ]
 })
+
