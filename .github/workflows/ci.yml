@@ -1,23 +1,27 @@
-name: GitHub Actions Build and Deploy Demo
-on: # 指定触发workflow的条件，这里是指定了每push一次到main分支，则触发一次
+name: CI Github Pages
+on:
+  #监听push操作
   push:
     branches:
-      - main
-jobs:  # workflows文件主体，可以指定一个或者多个，这里指定了一个job - build-and-deploy
+      - main # 这里只配置了main分支，所以只有推送main分支才会触发以下任务
+jobs:
+  # 任务ID
   build-and-deploy:
-    runs-on: ubuntu-latest # 在最新的ubuntu上运行
-    steps: # 指定每个job的运行步骤
-    - name: Checkout # 步骤名称
-      uses: actions/checkout@v2 # If you're using actions/checkout@v2 you must set persist-credentials to false in most cases for the deployment to work correctly.
-      with:
-        persist-credentials: false
-    - name: Install and Build
-      run: | # 该步骤要运行的命令，这里就是部署react 的命令
-        npm install
-        npm run-script build
-    - name: Deploy
-      uses: JamesIves/github-pages-deploy-action@releases/v3 # 执行一些公开的action
-      with:
-        ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }} # 这里是我们刚刚创建密钥的变量名称
-        BRANCH: gh-pages
-        FOLDER: build
+    # 运行环境
+    runs-on: ubuntu-latest
+    # 步骤
+    steps:
+      # 官方action，将代码拉取到虚拟机
+      - name: Checkout  ️ 
+        uses: actions/checkout@v3
+
+      - name: Install and Build   # 安装依赖、打包，如果提前已打包好无需这一步
+        run: |
+          npm install
+          npm run build
+
+      - name: Deploy   # 部署
+        uses: JamesIves/github-pages-deploy-action@v4.3.3
+        with:
+          branch: gh-pages # 部署后提交到那个分支
+          folder: dist # 这里填打包好的目录名称
