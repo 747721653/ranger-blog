@@ -43,6 +43,10 @@ export default defineConfig4CustomTheme<VdoingThemeConfig>({
           {
             text: '论文笔记',
             link: '/pages/ee7977/'
+          },
+          {
+            text: '一些小知识点',
+            link: '/pages/08ee34/'
           }
         ]
         // items: [
