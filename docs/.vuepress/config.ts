@@ -38,7 +38,7 @@ export default defineConfig4CustomTheme<VdoingThemeConfig>({
       { text: '首页', link: '/' },
       {
         text: '人工智能',
-        link: '/web/', //目录页链接，此处link是vdoing主题新增的配置项，有二级导航时，可以点击一级导航跳到目录页
+        link: '/ai/', //目录页链接，此处link是vdoing主题新增的配置项，有二级导航时，可以点击一级导航跳到目录页
         items: [
           {
             text: '论文笔记',
@@ -47,6 +47,10 @@ export default defineConfig4CustomTheme<VdoingThemeConfig>({
           {
             text: '一些小知识点',
             link: '/pages/08ee34/'
+          },
+          {
+            text: '《深度学习500问》',
+            link: '/note/dl500q/',
           }
         ]
         // items: [
@@ -87,7 +91,7 @@ export default defineConfig4CustomTheme<VdoingThemeConfig>({
       },
       {
         text: '开发',
-        link: '/ui/',
+        link: '/development/',
         // items: [
         //   { text: 'HTML', link: '/pages/8309a5b876fc95e3/' },
         //   { text: 'CSS', link: '/pages/0a83b083bdf257cb/' },
