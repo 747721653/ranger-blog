@@ -5,6 +5,7 @@ import { resolve } from 'path'
 import { defineConfig4CustomTheme, UserPlugins } from 'vuepress/config'
 import {defineUserConfig} from 'vuepress'
 import { VdoingThemeConfig } from 'vuepress-theme-vdoing/types'
+// @ts-ignore
 import dayjs from 'dayjs'
 import baiduCode from './config/baiduCode' // 百度统计hm码
 import htmlModules from './config/htmlModules' // 自定义插入的html块
@@ -46,7 +47,10 @@ export default defineConfig4CustomTheme<VdoingThemeConfig>({
           },
           {
             text: '一些小知识点',
-            link: '/pages/08ee34/'
+            items: [
+              {text: 'pytorch、numpy、pandas函数简易解释', link: '/pages/52b4a3/'}
+            ]
+            // link: '/pages/08ee34/'
           },
           {
             text: '《深度学习500问》',
