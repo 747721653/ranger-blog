@@ -1,0 +1,572 @@
+---
+title: 三、SpringBoot的核心技能
+date: 2023-06-01 20:23:25
+permalink: /pages/ab712d/
+categories:
+  - 技术
+  - SpringBoot3
+tags:
+  - 
+author: 
+  name: yangzhixuan
+  link: https://github.com/747721653
+---
+## 1. 常用注解
+
+SpringBoot摒弃XML配置方式，改为**全注解驱动**
+
+### 1. 组件注册
+
+**@Configuration**：替代以前的配置文件，配置类本身也是容器的组件；创建的Bean默认是单实例的
+
+**@SpringBootConfiguration**：自己写的配置类可以标这个，通用的配置类最好还是标@Configuration，其实就是方便理解，没有什么本质上的区别
+
+**@Bean**：替代以前的Bean标签，组件在容器中的名字默认是方法名，可以直接修改注解的值
+
+**@Scope**：调整创建的Bean是单实例还是多实例
+
+```java
+@Scope("prototype")
+@Bean("userHaha") //替代以前的Bean标签。 组件在容器中的名字默认是方法名，可以直接修改注解的值
+public User user01(){
+    var user = new User();
+    user.setId(1L);
+    user.setName("张三");
+    return user;
+}
+```
+
+**@Controller、 @Service、@Repository、@Component**
+
+**@Import**：需要在配置类上写，可以直接导入生成一个Bean，常用于导入第三方类，这样导入的组件的名字默认是全类名
+
+@ComponentScan
+
+
+
+步骤：
+
+**1、@Configuration 编写一个配置类**
+
+**2、在配置类中，自定义方法给容器中注册组件。配合@Bean**
+
+**3、或使用@Import 导入第三方的组件**
+
+
+
+### 2. 条件注解
+
+如果注解指定的**条件成立**，则触发指定行为
+
+***@ConditionalOnXxx***
+
+**@ConditionalOnClass：如果类路径中存在这个类，则触发指定行为**
+
+**@ConditionalOnMissingClass：如果类路径中不存在这个类，则触发指定行为**
+
+**@ConditionalOnBean：如果容器中存在这个Bean（组件），则触发指定行为**
+
+**@ConditionalOnMissingBean：如果容器中不存在这个Bean（组件），则触发指定行为**
+
+如果将这些注解放在配置类上，那么只有当注解判断生效整个配置类才生效
+
+场景：
+
+- 如果存在`FastsqlException`这个类，给容器中放一个`Cat`组件，名cat01，
+
+- 否则，就给容器中放一个`Dog`组件，名dog01
+
+- 如果系统中有`dog01`这个组件，就给容器中放一个 User组件，名zhangsan
+
+- 否则，就放一个User，名叫lisi
+
+  ```java
+  @SpringBootConfiguration
+  public class AppConfig2 {
+  
+      @ConditionalOnClass(name="com.alibaba.druid.FastsqlException") //放在方法级别，单独对这个方法进行注解判断。
+      @Bean
+      public Cat cat01(){
+          return new Cat();
+      }
+      
+      // @ConditionalOnMissingClass只能用value
+  	@ConditionalOnMissingClass(value="com.alibaba.druid.FastsqlException")
+      @Bean
+      public Dog dog01(){
+          return new Dog();
+      }
+  
+      @ConditionalOnBean(value = Dog.class)
+      @Bean
+      public User zhangsan(){
+          return new User();
+      }
+  
+      @ConditionalOnMissingBean(value = Dog.class)
+      @Bean
+      public User lisi(){
+          return new User();
+      }
+  }
+  ```
+
+
+
+**@ConditionalOnBean（value=组件类型，name=组件名字）：判断容器中是否有这个类型的组件，并且名字是指定的值**
+
+
+
+@ConditionalOnRepositoryType (org.springframework.boot.autoconfigure.data)
+@ConditionalOnDefaultWebSecurity (org.springframework.boot.autoconfigure.security)
+@ConditionalOnSingleCandidate (org.springframework.boot.autoconfigure.condition)
+@ConditionalOnWebApplication (org.springframework.boot.autoconfigure.condition)
+@ConditionalOnWarDeployment (org.springframework.boot.autoconfigure.condition)
+@ConditionalOnJndi (org.springframework.boot.autoconfigure.condition)
+@ConditionalOnResource (org.springframework.boot.autoconfigure.condition)
+@ConditionalOnExpression (org.springframework.boot.autoconfigure.condition)
+**@ConditionalOnClass** (org.springframework.boot.autoconfigure.condition)
+@ConditionalOnEnabledResourceChain (org.springframework.boot.autoconfigure.web)
+**@ConditionalOnMissingClass** (org.springframework.boot.autoconfigure.condition)
+@ConditionalOnNotWebApplication (org.springframework.boot.autoconfigure.condition)
+@ConditionalOnProperty (org.springframework.boot.autoconfigure.condition)
+@ConditionalOnCloudPlatform (org.springframework.boot.autoconfigure.condition)
+**@ConditionalOnBean** (org.springframework.boot.autoconfigure.condition)
+**@ConditionalOnMissingBean** (org.springframework.boot.autoconfigure.condition)
+@ConditionalOnMissingFilterBean (org.springframework.boot.autoconfigure.web.servlet)
+@Profile (org.springframework.context.annotation)
+@ConditionalOnInitializedRestarter (org.springframework.boot.devtools.restart)
+@ConditionalOnGraphQlSchema (org.springframework.boot.autoconfigure.graphql)
+@ConditionalOnJava (org.springframework.boot.autoconfigure.condition)
+
+### 3. 属性绑定
+
+**@ConfigurationProperties： 声明组件的属性和配置文件哪些前缀开始项进行绑定**
+
+**@EnableConfigurationProperties：快速注册注解：**
+
+* 多用于第三方组件的快速注册与配置属性绑定
+
+- **场景：**SpringBoot默认只扫描自己主程序所在的包。如果导入第三方包，即使组件上标注了 @Component、@ConfigurationProperties 注解，也没用。**因为组件都扫描不进来**，此时使用这个注解就可以快速进行属性绑定并把组件注册进容器，此时就能在配置文件中修改第三方包的配置了
+
+将容器中任意**组件（Bean）的属性值**和**配置文件**的配置项的值**进行绑定**：
+
+- **1、给容器中注册组件（@Component、@Bean）**
+
+
+- **2、使用@ConfigurationProperties 声明组件和配置文件的哪些配置项进行绑定**
+
+  ```java
+  @ConfigurationProperties(prefix = "pig")
+  @Component
+  public class Pig {
+      private Long id;
+      private String name;
+      private Integer age;
+  }
+  
+  // 或者在类上没有标注@Component注解时可以使用以下方式，其中ConfigurationProperties可以放在类上也能放在配置类方法上
+  
+  //@ConfigurationProperties(prefix = "pig")
+  @Bean
+  public Pig pig(){
+      return new Pig(); //我们自己new新pig
+  }
+  
+  ```
+
+
+更多注解参照：[Spring注解驱动开发](https://www.bilibili.com/video/BV1gW411W7wy)【1-26集】
+
+## 2. YAML配置文件
+
+**痛点**：SpringBoot 集中化管理配置，`application.properties`
+
+**问题**：配置多以后难阅读和修改，**层级结构辨识度不高**
+
+
+
+YAML 是 "YAML Ain't a Markup Language"（YAML 不是一种标记语言）。在开发的这种语言时，YAML 的意思其实是："Yet Another Markup Language"（是另一种标记语言）。
+
+- 设计目标，就是**方便人类读写**
+- **层次分明**，更适合做配置文件
+- 使用`.yaml`或 `.yml`作为文件后缀
+
+### 1. 基本语法
+
+- **大小写敏感**
+- 使用**缩进表示层级关系，k: v，使用空格分割k,v**
+- 缩进时不允许使用Tab键，只允许**使用空格**。换行
+- 缩进的空格数目不重要，只要**相同层级**的元素**左侧对齐**即可
+- **# 表示注释**，从这个字符一直到行尾，都会被解析器忽略。
+
+
+
+支持的写法：
+
+- **对象**：**键值对**的集合，如：映射（map）/ 哈希（hash） / 字典（dictionary）
+- **数组**：一组按次序排列的值，如：序列（sequence） / 列表（list）
+- **纯量**：单个的、不可再分的值，如：字符串、数字、bool、日期
+
+
+
+### 2. 示例
+
+```java
+@Component
+@ConfigurationProperties(prefix = "person") //和配置文件person前缀的所有配置进行绑定
+@Data //自动生成JavaBean属性的getter/setter
+//@NoArgsConstructor //自动生成无参构造器
+//@AllArgsConstructor //自动生成全参构造器
+public class Person {
+    private String name;
+    private Integer age;
+    private Date birthDay;
+    private Boolean like;
+    private Child child; //嵌套对象
+    private List<Dog> dogs; //数组（里面是对象）
+    private Map<String,Cat> cats; //表示Map
+}
+
+@Data
+public class Dog {
+    private String name;
+    private Integer age;
+}
+
+@Data
+public class Child {
+    private String name;
+    private Integer age;
+    private Date birthDay;
+    private List<String> text; //数组
+}
+
+@Data
+public class Cat {
+    private String name;
+    private Integer age;
+}
+```
+
+
+
+properties表示法
+
+```properties
+person.name=张三
+person.age=18
+person.birthDay=2010/10/12 12:12:12
+person.like=true
+person.child.name=李四
+person.child.age=12
+person.child.birthDay=2018/10/12
+person.child.text[0]=abc
+person.child.text[1]=def
+person.dogs[0].name=小黑
+person.dogs[0].age=3
+person.dogs[1].name=小白
+person.dogs[1].age=2
+person.cats.c1.name=小蓝
+person.cats.c1.age=3
+person.cats.c2.name=小灰
+person.cats.c2.age=2
+```
+
+
+
+yaml表示法
+
+```yaml
+person:
+  name: 张三
+  age: 18
+  birthDay: 2010/10/10 12:12:12
+  like: true
+  child:
+    name: 李四
+    age: 20
+    birthDay: 2018/10/10
+    text: ["abc","def"]
+  dogs:
+    - name: 小黑
+      age: 3
+    - name: 小白
+      age: 2
+  cats:
+    c1:
+      name: 小蓝
+      age: 3
+    c2: {name: 小绿,age: 2} #对象也可用{}表示
+```
+
+
+
+### 3. 细节
+
+- birthDay 推荐写为 birth-day
+
+- **文本**：
+
+    * **单引号**不会转义【\n 则为普通字符串显示】
+
+    - **双引号**会转义【\n会显示为**换行符**】
+
+- **大文本**
+
+    * `|`开头，大文本写在下层，**保留文本格式**，**换行符正确显示**
+
+    - `>`开头，大文本写在下层，折叠换行符，变为空格
+
+- **多文档合并**
+
+    * 使用`---`可以把多个yaml文档合并在一个文档中，每个文档区依然认为内容独立
+
+
+
+### 4. 小技巧：lombok
+
+简化JavaBean 开发。自动生成构造器、getter/setter、自动生成Builder模式等
+
+```java
+<dependency>
+    <groupId>org.projectlombok</groupId>
+    <artifactId>lombok</artifactId>
+    <scope>compile</scope>
+</dependency>
+```
+
+使用`@Data`等注解
+
+
+
+
+
+## 3. 日志配置
+
+规范：项目开发不要编写`System.out.println()`，应该用**日志**记录信息
+
+**日志门面**与**日志实现**的关系可以参考**JDBC**与**数据库**之间的关系
+
+![image](https://cdn.staticaly.com/gh/747721653/image-store@master/springboot/image.2ulljf9vunw0.webp)
+
+**感兴趣日志框架关系与起源可参考**：https://www.bilibili.com/video/BV1gW411W76m 视频 21~27集
+
+### 1.  简介
+
+1. Spring使用commons-logging作为内部日志，但底层日志实现是开放的。可对接其他日志框架。
+    * spring5及以后 commons-logging被spring直接自己写了。
+2. 支持 jul，log4j2，logback。SpringBoot 提供了默认的控制台输出配置，也可以配置输出为文件。
+3. logback是默认使用的。
+4. 虽然**日志框架很多**，但是我们不用担心，使用 SpringBoot 的**默认配置就能工作的很好**。
+
+
+
+**SpringBoot怎么把日志默认配置好的**
+
+1、每个`starter`场景，都会导入一个核心场景`spring-boot-starter`
+
+2、核心场景引入了日志的所用功能`spring-boot-starter-logging`
+
+3、默认使用了`logback + slf4j` 组合作为默认底层日志
+
+4、`日志是系统一启动就要用`，`xxxAutoConfiguration`是系统启动好了以后放好的组件，后来用的。所以说日志配置的时机更早
+
+5、日志是利用**监听器机制**配置好的。`ApplicationListener`。
+
+6、日志所有的配置都可以通过修改配置文件实现。以`logging`开始的所有配置。
+
+
+
+### 2. 日志格式
+
+```shell
+2023-03-31T13:56:17.511+08:00  INFO 4944 --- [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2023-03-31T13:56:17.511+08:00  INFO 4944 --- [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.7]
+```
+
+默认输出格式：
+
+- 时间和日期：毫秒级精度（2023-03-31T13:56:17.511+08:00）
+- 日志级别：ERROR, WARN, INFO, DEBUG, or TRACE.（INFO）
+- 进程 ID（4944）
+- ---： 消息分割符（---）
+- 线程名： 使用[]包含（[           main]）
+- Logger 名： 通常是产生日志的**类名**（o.apache.catalina.core.StandardService）
+- 消息： 日志记录的内容（Starting service [Tomcat]）
+
+注意： logback 没有FATAL级别，对应的是ERROR
+
+
+
+默认值：参照：`spring-boot`包`additional-spring-configuration-metadata.json`文件
+
+默认输出格式值：`%clr(%d{${LOG_DATEFORMAT_PATTERN:-yyyy-MM-dd'T'HH:mm:ss.SSSXXX}}){faint} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr(${PID:- }){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{39}){cyan} %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}`
+
+可修改为：`'%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread] %logger{15} ===> %msg%n'`
+
+### 3. 记录日志
+
+```java
+Logger logger = LoggerFactory.getLogger(getClass());
+@GetMapping("/h")
+public String hello() {
+    logger.info("哈哈哈，方法进来了");
+    return "hello";
+}
+
+或者使用Lombok的@Slf4j注解
+加入之后就不用自己创建logger对象了，直接用它自动帮我们创建的log对象
+```
+
+可以使用如下方式用占位符在日志中显示信息
+
+```java
+log.info("info 日志..... 参数a:{} b:{}",a,b);
+```
+
+### 4. 日志级别
+
+- 由低到高：`ALL,TRACE, DEBUG, INFO, WARN, ERROR,FATAL,OFF`；
+
+    * **只会打印指定级别及以上级别的日志**，例如使用DEBUG级别，DEBUG级别后面所有级别的日志都会打印
+
+    - ALL：打印所有日志
+    - TRACE：追踪框架详细流程日志，一般不使用
+    - DEBUG：开发调试细节日志
+    - INFO：关键、感兴趣信息日志
+    - WARN：警告但不是错误的信息日志，比如：版本过时
+    - ERROR：业务错误日志，比如出现各种异常
+    - FATAL：致命错误日志，比如jvm系统崩溃
+    - OFF：关闭所有日志记录
+
+- 不指定级别的所有类，都使用root指定的级别作为默认级别
+
+- SpringBoot日志**默认级别是** **INFO**：
+
+```java
+log.trace("trace 日志......");
+log.debug("debug 日志......");
+log.info("info 日志......");
+log.warn("warn 日志......");
+log.error("error 日志......");
+
+结果：
+2023-05-31T21:02:50.895+08:00  INFO 31416 --- [nio-8080-exec-1] c.a.l.c.HelloController                  : info 日志......
+2023-05-31T21:02:50.895+08:00  WARN 31416 --- [nio-8080-exec-1] c.a.l.c.HelloController                  : warn 日志......
+2023-05-31T21:02:50.895+08:00 ERROR 31416 --- [nio-8080-exec-1] c.a.l.c.HelloController                  : error 日志......
+```
+
+
+
+
+1. 在application.properties/yaml中配置logging.level。`<logger-name>=<level>`指定日志级别，可以针对不同类设置不同的日志级别
+2. level可取值范围：`TRACE, DEBUG, INFO, WARN, ERROR, FATAL, or OFF`，定义在 `LogLevel`类中
+3. root 的logger-name叫root，可以配置logging.level.root=warn，代表所有未指定日志级别都使用 root 的 warn 级别
+
+
+
+### 5. 日志分组
+
+比较有用的技巧是：
+
+将相关的logger分组在一起，统一配置。SpringBoot 也支持。比如：Tomcat 相关的日志统一设置
+
+```java
+logging.group.tomcat=org.apache.catalina,org.apache.coyote,org.apache.tomcat
+logging.level.tomcat=trace
+```
+
+
+
+SpringBoot 预定义两个组
+
+| Name | Loggers                                                      |
+| ---- | ------------------------------------------------------------ |
+| web  | org.springframework.core.codec, org.springframework.http, org.springframework.web, org.springframework.boot.actuate.endpoint.web, org.springframework.boot.web.servlet.ServletContextInitializerBeans |
+| sql  | org.springframework.jdbc.core, org.hibernate.SQL, org.jooq.tools.LoggerListener |
+
+### 6. 文件输出
+
+SpringBoot 默认只把日志写在控制台，如果想额外记录到文件，可以在application.properties中添加logging.file.name（设置日志文件名） or logging.file.path（设置日志文件保存路径）配置项。
+
+| logging.file.name | logging.file.path | 示例     | 效果                                                         |
+| ----------------- | ----------------- | -------- | ------------------------------------------------------------ |
+| 未指定            | 未指定            |          | 仅控制台输出                                                 |
+| **指定**          | 未指定            | my.log   | 写入指定文件。可以加路径                                     |
+| 未指定            | **指定**          | /var/log | 写入指定目录，文件名为spring.log，这样写会存到项目所在盘的根路径下/var/log文件夹中 |
+| **指定**          | **指定**          |          | 以logging.file.name为准                                      |
+
+### 7. 文件归档与滚动切割
+
+归档：每天的日志单独存到一个文档中。
+
+切割：每个文件10MB，超过大小切割成另外一个文件。
+
+1. 每天的日志应该独立分割出来存档。如果使用logback（SpringBoot 默认整合），可以通过application.properties/yaml文件指定日志滚动规则。
+2. 如果是其他日志系统，需要自行配置（在resources路径添加log4j2.xml或log4j2-spring.xml）
+3. 支持的滚动规则设置如下
+
+| 配置项                                               | 描述                                                         |
+| ---------------------------------------------------- | ------------------------------------------------------------ |
+| logging.logback.rollingpolicy.file-name-pattern      | 日志存档的文件名格式（默认值：${LOG_FILE}.%d{yyyy-MM-dd}.%i.gz） |
+| logging.logback.rollingpolicy.clean-history-on-start | 应用启动时是否清除以前存档（默认值：false）                  |
+| logging.logback.rollingpolicy.max-file-size          | 存档前，每个日志文件的最大大小（默认值：10MB）               |
+| logging.logback.rollingpolicy.total-size-cap         | 日志文件被删除之前，可以容纳的最大大小（默认值：0B）。设置1GB则磁盘存储超过 1GB 日志后就会删除旧日志文件 |
+| logging.logback.rollingpolicy.max-history            | 日志文件保存的最大天数(默认值：7).                           |
+
+日志归档示例如下
+
+![image](https://cdn.staticaly.com/gh/747721653/image-store@master/springboot/image.74bgna4jujc.webp)
+
+### 8. 自定义配置
+
+通常我们配置 application.properties 就够了。当然也可以自定义（创建一个日志的xml配置文件）。比如：
+
+| 日志系统                | 自定义                                                       |
+| ----------------------- | ------------------------------------------------------------ |
+| Logback                 | logback-spring.xml, logback-spring.groovy, logback.xml, or logback.groovy |
+| Log4j2                  | log4j2-spring.xml or log4j2.xml                              |
+| JDK (Java Util Logging) | logging.properties                                           |
+
+如果可能，我们建议您在日志配置中使用`-spring` 变量（例如，`logback-spring.xml` 而不是 `logback.xml`）。如果您使用标准配置文件，spring 无法完全控制日志初始化。
+
+最佳实战：自己要写配置，配置文件名加上 `xx-spring.xml`
+
+### 9. 切换日志组合
+
+```xml
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-web</artifactId>
+</dependency>
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter</artifactId>
+    <exclusions>
+        <exclusion>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-logging</artifactId>
+        </exclusion>
+    </exclusions>
+</dependency>
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-log4j2</artifactId>
+</dependency>
+```
+
+log4j2支持yaml和json格式的配置文件
+
+| 格式 | 依赖                                                         | 文件名                   |
+| ---- | ------------------------------------------------------------ | ------------------------ |
+| YAML | com.fasterxml.jackson.core:jackson-databind + com.fasterxml.jackson.dataformat:jackson-dataformat-yaml | log4j2.yaml + log4j2.yml |
+| JSON | com.fasterxml.jackson.core:jackson-databind                  | log4j2.json + log4j2.jsn |
+
+### 10. 最佳实战
+
+1. 导入任何第三方框架，先排除它的日志包，因为Boot底层控制好了日志
+2. 修改 `application.properties` 配置文件，就可以调整日志的所有行为。如果不够，可以编写日志框架自己的配置文件放在类路径下就行，比如`logback-spring.xml`，`log4j2-spring.xml`
+3. 如需对接**专业日志系统**，也只需要把 logback 记录的**日志**灌倒 **kafka**之类的中间件，这和SpringBoot没关系，都是日志框架自己的配置，**修改配置文件即可**
+4. **业务中使用slf4j-api记录日志。不要再 sout 了**
+
