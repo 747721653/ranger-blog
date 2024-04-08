@@ -21,6 +21,7 @@ jobs:
 
       - name: Install and Build
         run: |
+          yarn config set ignore-engines true
           yarn install
           yarn run build
       - name: Deploy
