@@ -10,15 +10,15 @@ tagline: 一名计算机专业研究生的博客&学习笔记记录网站
 features: # 可选的
   - title: 人工智能
     details: 机器学习、深度学习等人工智能相关知识
-    link: /web/ # 可选
-    imgUrl: /img/web.png # 可选
+    link: /ai/ # 可选
+    imgUrl: /img/ai.png # 可选
   - title: 技术
     details: 技术文档、教程、技巧、总结等文章
-    link: /ui/
-    imgUrl: /img/ui.png
+    link: /technology/
+    imgUrl: /img/web.png
   - title: 收藏
     details: 个人爱好及实用工具与网站
-    link: /technology/
+    link: /pages/2da524/
     imgUrl: /img/other.png
 
 # 文章列表显示方式: detailed 默认，显示详细版文章列表（包括作者、分类、标签、摘要、分页等）| simple => 显示简约版文章列表（仅标题和日期）| none 不显示文章列表
