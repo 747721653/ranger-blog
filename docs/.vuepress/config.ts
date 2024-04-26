@@ -197,7 +197,7 @@ export default defineConfig4CustomTheme<VdoingThemeConfig>({
 
     // 博主信息 (显示在首页侧边栏)
     blogger: {
-      avatar: 'https://cdn.statically.io/gh/747721653/picx-images-hosting@master/image.1co325on9eqo.webp',
+      avatar: 'https://cdn.jsdelivr.net/gh/747721653/picx-images-hosting@master/image.1co325on9eqo.webp',
       name: 'Ranger',
       slogan: '一名在校研究生',
     },
